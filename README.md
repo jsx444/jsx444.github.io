@@ -9,3 +9,21 @@
 <h1>
 TEOM简介：
   TEOM是个Man!!!
+  <!-- 文本输入框 -->
+ 
+<label>姓名：</label>
+ 
+<input type="text" placeholder="请输入姓名">
+ 
+<!-- 密码输入框（输入内容自动隐藏） -->
+ 
+<label>密码：</label>
+ 
+<input type="password" placeholder="请输入密码">
+ 
+<!-- 邮箱输入框（自动校验格式） -->
+ 
+<label>邮箱：</label>
+ 
+<input type="email" placeholder="example@domain.com">
+	
