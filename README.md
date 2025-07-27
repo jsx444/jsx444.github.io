@@ -9,10 +9,3 @@
 <h1>
 TEOM简介：
   TEOM是个Man!!!
-oncopy="return false"
-<inputstyle="ime-mode:disabled">
-<h1>
-<big>
-</bory>
-</html>
-
