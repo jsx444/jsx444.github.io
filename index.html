@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>简易社交平台</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { display: none; }
+        .active { display: block; }
+        form { margin: 20px 0; padding: 20px; border: 1px solid #ddd; }
+        .message { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <!-- 注册页面 -->
+    <div id="register" class="container active">
+        <h2>注册</h2>
+        <form onsubmit="register(event)">
+            <input type="text" id="regUser" placeholder="用户名" required>
+            <input type="password" id="regPass" placeholder="密码" required>
+            <button type="submit">注册</button>
+        </form>
+        <button onclick="showLogin()">已有账号？去登录</button>
+    </div>
+
+    <!-- 登录页面 -->
+    <div id="login" class="container">
+        <h2>登录</h2>
+        <form onsubmit="login(event)">
+            <input type="text" id="loginUser" placeholder="用户名" required>
+            <input type="password" id="loginPass" placeholder="密码" required>
+            <button type="submit">登录</button>
+        </form>
+    </div>
+
+    <!-- 主页面 -->
+    <div id="main" class="container">
+        <h2>欢迎 <span id="username"></span></h2>
+        <form onsubmit="postMessage(event)">
+            <textarea id="content" placeholder="分享新鲜事..." required></textarea>
+            <button type="submit">发布</button>
+        </form>
+        <div id="messages"></div>
+        <button onclick="logout()">退出登录</button>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        // 注册功能
+        function register(e) {
+            e.preventDefault();
+            const user = document.getElementById('regUser').value;
+            const pass = document.getElementById('regPass').value;
+            
+            if(localStorage.getItem(user)) {
+                alert('用户名已存在');
+                return;
+            }
+            
+            localStorage.setItem(user, pass);
+            alert('注册成功！');
+            showLogin();
+        }
+
+        // 登录功能
+        function login(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+            
+            if(localStorage.getItem(user) === pass) {
+                currentUser = user;
+                document.getElementById('username').textContent = user;
+                showMain();
+                loadMessages();
+            } else {
+                alert('用户名或密码错误');
+            }
+        }
+
+        // 发布消息
+        function postMessage(e) {
+            e.preventDefault();
+            const content = document.getElementById('content').value;
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            
+            messages.push({
+                user: currentUser,
+                content: content,
+                time: new Date().toLocaleString()
+            });
+            
+            localStorage.setItem('messages', JSON.stringify(messages));
+            document.getElementById('content').value = '';
+            loadMessages();
+        }
+
+        // 加载消息
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            const container = document.getElementById('messages');
+            container.innerHTML = messages.map(msg => `
+                <div class="message">
+                    <strong>${msg.user}</strong>
+                    <p>${msg.content}</p>
+                    <small>${msg.time}</small>
+                </div>
+            `).join('');
+        }
+
+        // 页面切换
+        function showLogin() {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById('login').classList.add('active');
+        }
+
+        function showMain() {
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.getElementById('main').classList.add('active');
+        }
+
+        function logout() {
+            currentUser = null;
+            showLogin();
+        }
+    </script>
+</body>
+</html>
